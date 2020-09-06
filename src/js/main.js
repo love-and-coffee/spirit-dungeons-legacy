@@ -1,3 +1,15 @@
+const monetization = document.monetization;
+const addEvent = (e, t, f) => {
+	e.addEventListener(t, f);
+};
+
+let isPremium = false;
+if (monetization) {
+	addEvent(monetization, 'monetizationstart', () => {
+		isPremium = true;
+	});
+}
+
 const click = 'click';
 const afterbegin = 'afterbegin';
 const m = Math;
@@ -2113,13 +2125,13 @@ const setup = () => {
 	gameState[2] = Date.now();
 
 	if (gameState[33] == false) {
-		if (mon) { // eslint-disable-line no-undef
-			addEvent(mon, 'monetizationstart', () => { // eslint-disable-line no-undef
+		if (monetization) {
+			addEvent(monetization, 'monetizationstart', () => {
 				unlockThemes();
 			});
 		}
 
-		if (isP) { // eslint-disable-line no-undef
+		if (isPremium) {
 			unlockThemes();
 		}
 	} else {

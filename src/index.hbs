@@ -6,18 +6,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 	<meta name="monetization" content="$ilp.uphold.com/frU6BJBrQAWx">
 
-	<script>
-		const mon = document.monetization;
-		function addEvent(e, t, f) {
-			e.addEventListener(t, f);
-		}
-		let isP = false;
-		if (mon) {
-			addEvent(mon, 'monetizationstart', () => {
-				isP = true;
-			});
-		}
-	</script>
 	{{#if css}}
 	<style>
 		{{{ css }}}
