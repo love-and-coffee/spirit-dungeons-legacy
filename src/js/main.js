@@ -1,6 +1,5 @@
 const click = 'click';
 const afterbegin = 'afterbegin';
-const w = window;
 const m = Math;
 const svgStart = '<svg viewBox="0 0 64 64">';
 const increase = 'Increases your ';
@@ -147,7 +146,7 @@ const tick = (now) => {
 	}
 
 	if (getLength(jobs) || getLength(tweens)) {
-		ticking = w.requestAnimationFrame(tick);
+		ticking = requestAnimationFrame(tick);
 	} else {
 		ticking = 0;
 	}
@@ -178,7 +177,7 @@ const liike = (handler) => function (target, settings) {
 		tweens.push(tween);
 	});
 	if (!ticking) {
-		ticking = w.requestAnimationFrame(tick);
+		ticking = requestAnimationFrame(tick);
 	}
 };
 
@@ -607,12 +606,12 @@ const orderBySpeed = (a, b) => {
 
 const saveGame = (gameStateToSave) => {
 	gameStateToSave[3] = Date.now();
-	w.localStorage.setItem('soulNotFoundGameState', JSON.stringify(gameStateToSave));
+	localStorage.setItem('soulNotFoundGameState', JSON.stringify(gameStateToSave));
 	return gameStateToSave;
 };
 
 const loadGame = (forceNew = false) => {
-	const loadedGameState = w.localStorage.getItem('soulNotFoundGameState');
+	const loadedGameState = localStorage.getItem('soulNotFoundGameState');
 
 	if (loadedGameState == null || forceNew) {
 		return saveGame(initialGameState.slice());
@@ -625,7 +624,7 @@ const restartGame = () => {
 		return;
 	}
 
-	if (!w.confirm('This will make things easier as you keep your attributes and trophy bonuses.')) {
+	if (!confirm('This will make things easier as you keep your attributes and trophy bonuses.')) {
 		return;
 	}
 
@@ -1894,7 +1893,7 @@ const loop = (timestamp) => {
 	draw();
 
 	lastRender = timestamp;
-	w.requestAnimationFrame(loop);
+	requestAnimationFrame(loop);
 };
 
 const unlockThemes = () => {
@@ -1920,8 +1919,8 @@ const switchTheme = (changeState, event = null) => {
 
 	if (gameState[33] != true) {
 		if (event != null) {
-			if (w.confirm('This is premium game theme! Do you want to be redirected to coil.com to get a membership?')) {
-				const win = w.open('https://coil.com/?ref=soul-not-found', '_blank');
+			if (confirm('This is premium game theme! Do you want to be redirected to coil.com to get a membership?')) {
+				const win = open('https://coil.com/?ref=soul-not-found', '_blank');
 				win.focus();
 			} else {
 				event.preventDefault();
@@ -2140,13 +2139,13 @@ const setup = () => {
 
 	saveGame(gameState);
 
-	w.requestAnimationFrame(loop);
+	requestAnimationFrame(loop);
 };
 
 (function () {
 	setup();
 
-	addEvent(w, 'beforeunload', () => { // eslint-disable-line no-undef
+	addEvent(window, 'beforeunload', () => { // eslint-disable-line no-undef
 		stopBattle();
 	});
 }());
