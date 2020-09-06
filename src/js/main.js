@@ -730,43 +730,15 @@ const renderNotifications = () => {
 		}
 	}
 
-	if (affordableUpgrades) {
-		navSkillsElement.classList.add('notify');
-	} else {
-		navSkillsElement.classList.remove('notify');
-	}
-
-	if (getUnusedAttributes() > 0) {
-		navSkillsElement.classList.add('notify-1');
-	} else {
-		navSkillsElement.classList.remove('notify-1');
-	}
-
-	if (getUnusedSkills() > 0) {
-		navSkillsElement.classList.add('notify-2');
-	} else {
-		navSkillsElement.classList.remove('notify-2');
-	}
+	navSkillsElement.classList.toggle('notify', affordableUpgrades);
+	navSkillsElement.classList.toggle('notify-1', getUnusedAttributes() > 0);
+	navSkillsElement.classList.toggle('notify-2', getUnusedSkills() > 0);
 
 	const newTrophies = getLength(gameState[23]) - lastTrophyNotification;
 
-	if (newTrophies >= 1) {
-		navTrophiesElement.classList.add('notify');
-	} else {
-		navTrophiesElement.classList.remove('notify');
-	}
-
-	if (newTrophies >= 3) {
-		navTrophiesElement.classList.add('notify-1');
-	} else {
-		navTrophiesElement.classList.remove('notify-1');
-	}
-
-	if (newTrophies >= 5) {
-		navTrophiesElement.classList.add('notify-2');
-	} else {
-		navTrophiesElement.classList.remove('notify-2');
-	}
+	navTrophiesElement.classList.toggle('notify', newTrophies >= 1);
+	navTrophiesElement.classList.toggle('notify-1', newTrophies >= 3);
+	navTrophiesElement.classList.toggle('notify-2', newTrophies >= 5);
 };
 
 const renderPlayerSkills = () => {
@@ -890,13 +862,7 @@ const unlockTabs = () => {
 };
 
 const renderPlayerAttributes = () => {
-	const unusedAttributes = getUnusedAttributes();
-
-	if (unusedAttributes > 0) {
-		attributeBlockElement.classList.remove('done');
-	} else {
-		attributeBlockElement.classList.add('done');
-	}
+	attributeBlockElement.classList.toggle('done', getUnusedAttributes() < 1);
 	attackAttributeValueElement.innerHTML = gameState[6] + gameState[36];
 	defenseAttributeValueElement.innerHTML = gameState[7] + gameState[37];
 };
@@ -1901,13 +1867,9 @@ const switchTheme = (changeState, event = null) => {
 	if (event != null) {
 		event.preventDefault();
 	}
-	if (gameState[34]) {
-		setStyle(getElemById('normalIcon'), 'opacity', 0.1);
-		setStyle(getElemById('premiumIcon'), 'opacity', 1);
-	} else {
-		setStyle(getElemById('normalIcon'), 'opacity', 1);
-		setStyle(getElemById('premiumIcon'), 'opacity', 0.1);
-	}
+
+	setStyle(getElemById('normalIcon'), 'opacity', gameState[34] ? 0.1 : 1);
+	setStyle(getElemById('premiumIcon'), 'opacity', gameState[34] ? 1 : 0.1);
 
 	if (gameState[33] != true) {
 		if (event != null) {
