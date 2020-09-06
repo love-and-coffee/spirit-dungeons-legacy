@@ -30,77 +30,57 @@ const insertHtml = (element, where, what) => {
 	element.insertAdjacentHTML(where, what);
 };
 
-const Tween = function Tween(target, handler, settings) {
-	const { start } = settings;
-	const { end } = settings;
-	const { from } = settings;
-	const { to } = settings;
-	const { easing } = settings;
-	const { onstart } = settings;
-	const { onprogress } = settings;
-	const { onend } = settings;
+class Tween {
+	constructor(target, handler, settings) {
+		this.target = target;
+		this.handler = handler;
 
-	this.target = target;
-	this.handler = handler;
+		this.start = settings.start;
+		this.end = settings.end;
 
-	this.start = start;
-	this.end = end;
+		this.easing = settings.easing;
 
-	this.easing = easing;
+		this.from = settings.from;
+		this.to = settings.to;
+		this.keys = [];
 
-	this.from = from;
-	this.to = to;
-	this.keys = [];
+		this.onstart = settings.onstart;
+		this.onprogress = settings.onprogress;
+		this.onend = settings.onend;
 
-	this.onstart = onstart;
-	this.onprogress = onprogress;
-	this.onend = onend;
+		this.running = false;
 
-	this.running = false;
-
-	this.store = target.__liike || (target.__liike = {});
-};
-Tween.prototype.init = function init() {
-	const this$1 = this;
-
-	const ref = this;
-	const { from } = ref;
-	const { to } = ref;
-	const { keys } = ref;
-
-	for (const key in to) {
-		if (!(key in from)) {
-			from[key] = this$1.store[key] || 0;
-		}
-		keys.push(key);
+		this.store = target.__liike || (target.__liike = {});
 	}
 
-	for (const key$1 in from) {
-		if (!(key$1 in to)) {
-			to[key$1] = this$1.store[key$1] || 0;
-			keys.push(key$1);
+	init() {
+		for (const key in this.to) {
+			if (!(key in this.from)) {
+				this.from[key] = this.store[key] || 0;
+			}
+			this.keys.push(key);
+		}
+
+		for (const key in this.from) {
+			if (!(key in this.to)) {
+				this.to[key] = this.store[key] || 0;
+				this.keys.push(key);
+			}
 		}
 	}
-};
-Tween.prototype.tick = function tick(t) {
-	const this$1 = this;
 
-	const ref = this;
-	const { keys } = ref;
-	const { from } = ref;
-	const { to } = ref;
-	const { easing } = ref;
+	tick(t) {
+		const e = this.easing(t);
 
-	const e = easing(t);
+		for (let i = 0; i < getLength(this.keys); i++) {
+			const key = this.keys[i];
 
-	for (let i = 0; i < getLength(keys); i++) {
-		const key = keys[i];
+			this.store[key] = this.from[key] + (this.to[key] - this.from[key]) * e;
+		}
 
-		this$1.store[key] = from[key] + (to[key] - from[key]) * e;
+		this.handler(this.target, this.store);
 	}
-
-	this.handler(this.target, this.store);
-};
+}
 
 const easeInBy = (power) => (t) => m.pow(t, power);
 const easeOutBy = (power) => (t) => 1 - m.abs(m.pow(t - 1, power));
@@ -165,14 +145,14 @@ const tick = (now) => {
 };
 
 const liike = (handler) => function (target, settings) {
-	let { delay } = settings; if (delay === void 0) delay = 0;
-	let { duration } = settings; if (duration === void 0) duration = 0;
-	let { from } = settings; if (from === void 0) from = {};
-	let { to } = settings; if (to === void 0) to = {};
-	let { easing } = settings; if (easing === void 0) easing = 'linear';
-	let { onprogress } = settings; if (onprogress === void 0) onprogress = nullFunc;
-	let { onstart } = settings; if (onstart === void 0) onstart = nullFunc;
-	let { onend } = settings; if (onend === void 0) onend = nullFunc;
+	const { delay = 0 } = settings;
+	const { duration = 0 } = settings;
+	const { from = {} } = settings;
+	const { to = {} } = settings;
+	const { easing = 0 } = settings;
+	const { onprogress = nullFunc } = settings;
+	const { onstart = nullFunc } = settings;
+	const { onend = nullFunc } = settings;
 
 	jobs.push((now) => {
 		const tween = new Tween(target, handler, {
@@ -2046,7 +2026,7 @@ const setup = () => {
 
 	addEvent(player, click, (e) => { // eslint-disable-line no-undef
 		const element = e.target.closest('.unit');
-		const { id } = element.dataset;
+		const id = element.dataset.id;
 		if (element && id < getLength(gameState[12])) {
 			generateUnit(id);
 		}
