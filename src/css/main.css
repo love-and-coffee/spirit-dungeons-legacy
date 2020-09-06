@@ -1,0 +1,1016 @@
+* {
+	font-family: "Comic Sans MS", sans-serif;
+	text-align: center;
+	user-select: none;
+	outline: 0;
+}
+
+*:focus {
+	outline: 0;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	margin: 0;
+}
+
+html {
+	/* background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAAAV0lEQVR4AWPg5uaexcDI8B9Ec3JyFhDCpKpnACmGYWI0kKqe9j4AAi0gBtPEaCBZPYggF1NsAYXBR9gCShPAwPuAkgRA30imJR4tKkaLitGiYrSoIAIDAKy7LKCTTHSAAAAAAElFTkSuQmCC); */
+	background: #333;
+}
+
+body {
+	max-width: 500px;
+    display: flex;
+	justify-content: center;
+    flex-direction: column;
+	margin: 0 auto;
+	background: transparent;
+}
+
+body > div {
+	margin: 1rem;
+}
+
+hr {
+	width: 100%;
+    border-color: #333;
+}
+
+/* 
+h1, h2, h3, h4, h5, h6 {
+	background-color: #222;
+	box-shadow: 0 0 5px 0 #000;
+	color: #fff;
+	text-align: center;
+	padding: 1rem;
+}
+
+article {
+	background-color: #222;
+	box-shadow: 0 0 5px 0 #000;
+	color: #fff;
+	padding: 1rem 2rem;
+	margin-bottom: 1.5rem;
+} */
+
+.content {
+	height: 450px;
+	min-height: 450px;
+	max-height: 450px;
+}
+
+.arrow-up {
+	width: 0;
+    height: 0;
+	border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 8px solid #fff;
+    margin-top: 6px;
+	margin-right: 1px;
+	display: none;
+}
+
+.active .arrow-up, .active .unit-progress {
+	display: inherit;
+}
+
+.block {
+	background-color: #222;
+	box-shadow: 0 0 5px 0 #111;
+	padding: 1rem;
+	border: 0;
+	color: #fff;
+	margin-bottom: 1rem;
+}
+
+#nav {
+	margin-bottom: 0;
+}
+
+button {
+    font-size: 1.5rem;
+	cursor: pointer;
+	width: 100%;
+	transition: all 250ms;
+}
+
+button:hover {
+	box-shadow: 0 0 5px 2px #111;
+}
+
+.unit {
+	display: flex;
+    flex-direction: column;
+	align-items: center;
+	padding: 0.5rem;
+	position: relative;
+}
+
+#game {
+	position: relative;
+	display: flex;
+    flex-direction: column;
+	height: 100%;
+	max-height: 600px;
+}
+
+#player .unit:hover {
+	cursor: pointer;
+}
+
+#player .unit.not .c {
+	height: 40px;
+}
+
+#player .unit.not .c svg {
+	width: 30px;
+}
+
+#player .unit.not:hover {
+	cursor: default;
+}
+
+#player .unit svg {
+	transition: all 250ms;
+}
+
+#player .unit:hover svg, #player .unit.active svg {
+	transform: scale(1.15, 1.15);
+}
+
+#player .unit:hover svg {
+	filter: drop-shadow(0px 0px 2px #eee);
+}
+
+#player .unit.not:hover > svg {
+	transform: none;
+	filter: none;
+	fill: #aaa;
+}
+
+#player .unit span {
+	margin-top: 5px;
+}
+
+#enemy .unit span {
+	margin-bottom: 5px;
+}
+
+.damage-indicator {
+	position: absolute;
+	color: #da3e3f;
+	font-weight: bold;
+}
+
+#player .damage-indicator {
+    top: 48px;
+}
+
+.dead {
+	opacity: 0.4;
+}
+
+#player, #enemy {
+	display: flex;
+    justify-content: center;
+}
+
+#enemy {
+	margin-top: 3rem;
+}
+
+svg {
+	width: 40px;
+}
+
+#player svg {
+	fill: #fff;
+}
+
+#enemy svg {
+	fill: #da3f3f;
+}
+
+#battle {
+    display: flex;
+	flex-direction: column;
+	position: relative;
+}
+
+#battleBlock {
+	height: 100%;
+}
+
+#gui {
+	display: flex;
+	justify-content: space-between;
+	position: relative;
+}
+
+#gui div {
+	display: flex;
+    align-items: center;
+}
+
+#gui div svg {
+	width: 40px;
+}
+
+#gui div div {
+	flex-direction: column;
+}
+
+#playerGold {
+	margin-left: 8px;
+}
+
+#gui #playerGold {
+	align-items: flex-start;
+}
+
+#playerLevel {
+	margin-left: 3px;
+}
+
+#stage {
+	display: flex;
+	flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+#a, #playerCurrentLevel, #stageCurrent {
+	font-size: 1.25rem;
+}
+
+#stageCurrent {
+	font-size: 1.5rem;
+    margin-top: 0.75rem;
+}
+
+#b, #f, #not-generating, .unit-progress {
+	font-size: 0.75rem;
+    color: #aaa;
+    margin-top: 3px;
+}
+
+#nav {
+	display: flex;
+}
+
+#nav a {
+	text-decoration: none;
+	position: relative;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+	align-items: center;
+	width: 25%;
+	font-size: 0.8rem;
+	cursor: default;
+	transition: all 250ms;
+}
+
+#nav a.unlocked {
+	cursor: pointer;
+}
+
+#nav a.unlocked:hover svg, #nav a.active svg {
+	transform: scale(1.2, 1.2);
+}
+
+#nav a svg {
+	margin-bottom: 5px;
+	fill: #fff;
+	width: 34px; 
+	padding: 3px;
+	transition: all 250ms;
+}
+
+#navBattle.unlocked:hover, #navBattle.active {
+	color: #e46262;
+}
+
+#navBattle.unlocked:hover svg, #navBattle.active svg {
+	fill: #e46262;
+}
+
+#navMorality.unlocked:hover, #navMorality.active {
+	color: #81c7ff;
+}
+
+#navMorality.unlocked:hover svg, #navMorality.active svg {
+	fill: #81c7ff;
+}
+
+#navSkills.unlocked:hover, #navSkills.active {
+	color: #b5664a;
+}
+
+#navSkills.unlocked:hover svg, #navSkills.active svg {
+	fill: #b5664a;
+}
+
+#navSkills svg {
+	width: 36px;
+	padding: 2px;
+}
+
+#navTrophies.unlocked:hover, #navTrophies.active {
+	color: #e0a656;
+}
+
+#navTrophies.unlocked:hover svg, #navTrophies.active svg {
+	fill: #e0a656;
+}
+
+.unit-progress {
+	margin-top: 7px;
+	display: none;
+}
+
+/* #navMore:hover {
+	color: red;
+}
+
+#navMore:hover svg {
+	fill: red;
+} */
+
+#attack {
+	background: #a03536;
+    box-shadow: 0 0 5px 0 #a03536;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#attack:hover {
+	background: #da3e3f;
+	box-shadow: 0 0 5px 0px #da3e3f;
+}
+
+#attack.idle {
+	background: #222;
+	box-shadow: 0 0 5px 0px #111;
+}
+
+#attack.idle:hover {
+	background: #a03536;
+    box-shadow: 0 0 5px 0 #a03536;
+}
+
+#attack .info, .info {
+	font-size: 0.75rem;
+	color: #ddd;
+	margin-top: 3px;	
+}
+
+#skills > div {
+	display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#attributeBlock {
+	display: flex;
+	flex-direction: column;
+}
+
+#attributes {
+	display: flex;
+	padding: 0 0.5rem;
+}
+
+#attributes button {
+	padding: 1rem 1.5rem 1rem 0.75rem;
+    margin: 1rem .5rem;
+    display: flex;
+    justify-content: space-between;
+	align-items: center;
+	color: #aaa;
+	background-color: #1d1d1d;
+	position: relative;
+	height: 50px;
+}
+
+#attributes svg {
+	width: 16px;
+    border: 1px solid #aaa;
+    padding: 6px;
+    fill: #aaa;
+    box-shadow: 0 0 3px #aaa;
+    border-radius: 4px;
+    position: absolute;
+    right: .65rem;
+	transition: all 250ms;
+}
+
+#attributeBlock.done button {
+	color: #fff;
+	cursor: default;
+	padding: 1rem 1rem 1rem 0.75rem;
+}
+
+#attributeBlock.done strong {
+	margin-right: 0;
+}
+
+#attributeBlock.done svg {
+	display: none;
+}
+
+#attributeBlock.done button:hover {
+	box-shadow: 0 0 5px 0 #111;
+}
+
+#attributes button:hover {
+	color: #fff;
+}
+
+#attributes button:hover svg {
+	fill: #fff;
+	border-color: #fff;
+}
+
+#attributes button strong {
+	font-size: 1rem;
+	margin-right: 1.75rem;
+}
+
+#attributes button span {
+	margin-right: 1rem;
+	color: #fff;
+}
+
+/* #attributeMessage {
+	font-size: 1rem;
+	margin: 0.5rem 1rem;
+}
+
+#attributeMessage strong {
+	color: #fff;
+}
+
+#attributeBlock.done #attributeMessage {
+	display: none;
+} */
+
+.c {
+	position: absolute;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(34 34 34 / 90%);
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 11px #222;
+	width: 100%;
+	height: 100%;
+    text-shadow: 0px 0px 5px #ffffff;
+}
+
+#nav a .c svg, .c svg {
+	width: 20px;
+	fill: #fff;
+    filter: drop-shadow(0px 0px 5px #fff);
+}
+
+.c span {
+	font-size: 0.75rem;
+}
+
+#skills .c {
+	position: relative;
+	background-color: #1e1e1e;
+	box-shadow: 0 0 5px 0 #111;
+}
+
+#skills .c svg {
+	width: 50px;
+	filter: drop-shadow(0 0 2px #fff);
+}
+
+#skills .c span {
+	font-size: 1.5rem;
+	margin-top: 0.75rem;
+	text-shadow: 0 0 2px #fff;
+}
+
+#skillLock {
+	display: flex;
+    flex-wrap: wrap;
+	justify-content: space-between;
+	padding: 0.5rem;
+	height: 100%;
+	align-content: flex-start;
+}
+
+#skillLock.lock {
+	padding: 1rem;
+}
+
+#skillLock a {
+	background-color: #1e1e1e;
+    box-shadow: 0 0 5px 0 #111;
+    margin: 0.5rem;
+    flex: 1 1 40%;
+    padding: 0.5rem 0 0.6rem 0;
+    text-decoration: none;
+	color: #aaa;
+	transition: all 250ms;
+	max-width: calc(50% - 1rem);
+}
+
+#skillLock.done a {
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+	padding: 0;
+	height: 50px;
+	color: #fff;
+	cursor: default;
+}
+
+#skillLock.done a > span {
+	margin-left: 1rem;
+}
+
+#skillLock.done a div {
+	display: flex;
+    flex-direction: column;
+	padding-left: 0.75rem;
+	align-items: self-start;
+}
+
+#skillLock.done a div.cost {
+	color: #888;
+	border-left: 1px solid #333;
+	margin-right: 1rem;
+	padding-left: 1rem;
+	align-items: center;
+}
+
+#skillLock.done a div .skillStats {
+	font-size: 0.75rem;
+	margin-bottom: 2px;
+	color: #888;
+}
+
+#skillLock a.pickSkill {
+	display: flex;
+	flex-direction: column;
+}
+
+#skillLock a.pickSkill span {
+	font-size: 0.7rem;
+    margin-top: 3px;
+}
+
+#skillLock.done a.open div {
+	color: #fff;
+}
+
+#skillLock.done a span.buy {
+	margin-top: 0.25rem;
+    font-size: 0.75rem;
+}
+
+#skillLock a.open {
+	cursor: pointer;
+}
+
+#skillLock a.open:hover {
+	box-shadow: 0 0 5px 2px #111;
+	transform: scale(1.05, 1.05);
+}
+
+#skillLock a.open:hover strong {
+	color: #fff;
+}
+
+#skillLock a:hover, #skillLock a.nextSkill {
+	transform: scale(1, 1);
+}
+
+#skillTitle, #attributeMessage {
+	font-size: 1.5rem;
+	/* display: none; */
+	margin: 0.5rem 0;
+}
+
+.notification {
+	background-color: #ffffff;
+    width: 6px;
+    height: 6px;
+    border-radius: 100%;
+    position: absolute;
+    top: -6px;
+	box-shadow: 0 0 5px #ffffff;
+	display: none;
+}
+
+#nav a.notify .notification {
+	display: block;
+}
+
+#nav a.notify-1 .notification {
+	display: block;
+	background-color: #4d84b9;
+    box-shadow: 0 0 5px #4d84b9;
+}
+
+#nav a.notify-2 .notification {
+	display: block;
+	background-color: #da3e3f;
+    box-shadow: 0 0 5px #da3e3f;
+}
+
+#skillLock a.nextSkill:hover {
+	box-shadow: 0 0 5px 0 #111;
+	cursor: default;
+}
+
+#skillLock a.nextSkill {
+	justify-content: center;
+}
+
+#skillLock a.nextSkill svg {
+	width: 30px;
+    fill: #aaa;
+}
+
+#skillLock a.nextSkill span {
+	margin-left: 0.25rem;
+	color: #aaa;
+}
+
+#skillLock a.nextSkill:hover span {
+	color: #aaa;
+}
+
+#morality > div {
+	width: 100%;
+	padding: 1rem 2rem;
+	overflow-y: auto;
+}
+
+#morality p {
+	text-align: left;
+	margin-top: 1.25rem;
+	line-height: 1.5;
+}
+
+#morality li {
+	text-align: left;
+	margin-top: 5px;	
+}
+
+#morality a {
+	color: #4d84b9;
+}
+
+#trophies > div {
+	width: 100%;
+	padding: 1rem;
+	overflow-y: auto;
+}
+
+#trophyList {
+	display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    justify-content: center;
+}
+
+#trophyList li {
+	width: 30px;
+    height: 30px;
+    padding: 10px;
+	box-shadow: 0 0 5px 0 #111;
+    background: #1f1f1f;
+	margin: 5px;
+	cursor: pointer;
+	opacity: 0.75;
+	transition: all 250ms;
+}
+
+
+#trophyList li:hover {
+	transform: scale(1.1, 1.1);
+}
+
+#trophyList li.unlockedTrophy:hover {
+	opacity: 1;
+}
+
+#trophyList li svg {
+	filter: blur(1px);
+}
+
+#trophyList li.unlockedTrophy svg {
+	filter: none;
+}
+
+#trophyList svg {
+	fill: white;
+	width: auto;
+}
+
+#e {
+	display: none;
+	flex-direction: column;
+	background: transparent;
+    border: 0;
+    color: #aaa;
+    position: absolute;
+    top: 0;
+    width: 140px;
+    margin-left: -70px;
+    left: 50%;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+	margin-top: 11px;
+	box-shadow: 0 0 5px 0 #111;
+	background: #1f1f1f;
+}
+
+#e .info {
+	color: #aaa;
+}
+
+#e:hover {
+	color: #fff;
+	transform: scale(1.075, 1.075);
+}
+
+#d {
+	background: transparent;
+    box-shadow: none;
+    position: absolute;
+    top: 16px;
+    left: 0;
+    height: 42px;
+    text-shadow: 0 0 5px #aaa;
+}
+
+#d svg {
+	fill: #aaa;
+    filter: drop-shadow(0 0 5px #aaa);
+}
+
+#trophyTitle {
+	margin-bottom: 0.25rem;
+}
+
+#trophyBonus {
+	font-size: 0.8rem;
+	color: #aaa;
+	margin-bottom: 1.5rem;
+}
+
+#trophyBonus strong {
+	color: #fff;
+}
+
+#premiumSwitch {
+	display: flex;
+    position: absolute;
+    top: 1rem;
+	right: 1rem;
+	width: 100px;
+	height: 50px;
+    padding: 0;
+	border: 0;
+	justify-content: space-around;
+	align-items: center;
+	background: #202020;
+	transition: all 250ms;
+	box-shadow: 0 0 5px 0 #111;
+}
+
+#premiumSwitchLock {
+	position: absolute;
+    background: #202020;
+    opacity: 0.9;
+	width: 100%;
+	height: 100%;
+}
+
+#premiumSwitch:hover {
+	transform: scale(1.1, 1.1);
+}
+
+#premiumSwitch:visited, #premiumSwitch:link, #premiumSwitch:active, #premiumSwitch:hover {
+	color: #202020!important;
+}
+
+#premiumSwitchLock svg {
+	fill: #555;
+    width: 30px;
+	margin-top: 10px;
+	transition: all 250ms;
+}
+
+#premiumSwitch:hover #premiumSwitchLock svg {
+	fill: #fff;
+	filter: drop-shadow(0 0 5px #fff)
+}
+
+#premiumSwitch div {
+	transition: all 250ms;
+}
+
+#premiumIcon {
+	font-size: 2.3rem;
+    margin-top: -5px;
+}
+
+.premium #goldBlock {
+	font-size: 2.2rem;
+}
+
+.premium #playerLevelBlock {
+	font-size: 2.1rem;
+}
+
+.premium #d {
+	font-size: 1.5rem;
+	text-shadow: none;
+	top: 14px;
+}
+
+.premium .c {
+	font-size: 1.5rem;
+	text-shadow: none;
+	background-color: rgb(34 34 34 / 95%);
+}
+
+.premium .c span {
+	margin-top: 5px;
+}
+
+.premium .unit {
+	font-size: 2.5rem;
+	text-shadow: 0 2px 10px #000;
+}
+
+.premium .unit span {
+	font-size: 1rem;
+}
+
+.premium #trophyList li {
+	font-size: 1.5rem;
+}
+
+.premium #trophyList li span {
+	filter: blur(1px);
+}
+
+.premium #trophyList li.unlockedTrophy span {
+	filter: none;
+}
+
+.premium #nav a strong {
+	font-size: 2.2rem;
+	margin-bottom: 5px;
+	transition: all 250ms;
+	text-shadow: 0 2px 10px #000;
+}
+
+.premium #skillLock .c {
+	font-size: 5rem;
+}
+
+.premium #player .unit span {
+    margin-top: 8px;
+}
+
+.trophyOverlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: #222;
+	box-shadow: 0 0 5px #222;
+    opacity: 0.75;
+}
+
+.unlockedTrophy .trophyOverlay {
+	display: none;
+}
+
+* {
+	scrollbar-width: thin;
+	scrollbar-color: #1b1b1b transparent;
+}
+
+*::-webkit-scrollbar {
+	width: 7px;
+}
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+	background-color: #1b1b1b;
+	border-radius: 3px;
+	border: 3px solid transparent;
+}
+
+.buyOption {
+	color: #666;
+    text-decoration: none;
+    padding: 0.25rem;
+	border: 1px solid #666;
+	display: inline-block;
+	width: 40px;
+}
+
+.buyOption.active {
+	color: #fff;
+	border-color: #fff;
+}
+
+#popup {
+    flex-direction: column;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    margin-left: -150px;
+	margin-top: -80px;
+	padding: 0;
+	align-items: center;
+	background: #292929;
+	box-shadow: 0px 1px 5px 3px #171717;
+}
+
+#popup p {
+	margin: 1.5rem;
+}
+
+#popup button {
+	width: auto;
+    padding: 0.5rem 1rem;
+    background: #444;
+    outline: 0;
+    border: 0;
+    color: #fff;
+	box-shadow: 0 0 5px #111;
+	margin-bottom: 1.5rem;
+	font-size: 0.8rem;
+}
+
+@media (max-width: 500px) {
+	body {
+		justify-content: flex-end;
+	}
+
+	#game {
+		margin: 0;
+    	margin-bottom: 1.75rem;
+	}
+
+	#stage {
+		align-items: flex-start;
+		margin-left: 1rem;
+	}
+}
+
+@media (max-width: 460px) {
+	.skillLevelInfo {
+		display: none;
+	}
+
+	#e {
+		width: 80px;
+		margin-left: -40px;
+		height: 40px;
+		margin-top: 17px;
+	}
+
+	#e .info {
+		display: none;
+	}
+}
+
+@media (max-width: 380px) {
+	#attackAttributeValue, #defenseAttributeValue {
+		display: none;
+	}
+	.done #attackAttributeValue, .done #defenseAttributeValue {
+		display: inherit;
+	}
+
+	#skillLock.done a div.cost {
+		padding-left: 0.5rem;
+		margin-right: 0.5rem;
+	}
+}
