@@ -2,7 +2,7 @@ const click = 'click';
 const afterbegin = 'afterbegin';
 const w = window;
 const m = Math;
-const svgStart = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs/>';
+const svgStart = '<svg viewBox="0 0 64 64">';
 const increase = 'Increases your ';
 
 const getElemById = (id) => document.getElementById(id);
@@ -282,7 +282,7 @@ const trophyColors = [
 
 const units = [
 	[
-		'<svg xmlns="http://www.w3.org/2000/svg" class="skeleton" viewBox="0 0 128 128"><defs/><path d="M64 4C34 4 4 19 4 42c0 15 11 22 11 37 0 11-4 11-4 19 0 4 12 8 23 11v15h60v-15s23-7 22-11c0-7-3-8-3-19 0-7 11-23 11-37 0-23-30-38-60-38zM41 49a15 15 0 110 30 15 15 0 010-30zm45 0a15 15 0 110 30 15 15 0 010-30zM64 75c4 0 11 15 11 19 0 8 0 8-4 8H56c-3 0-3 0-3-8 0-4 7-19 11-19z"/></svg>',
+		'<svg class="skeleton" viewBox="0 0 128 128"><path d="M64 4C34 4 4 19 4 42c0 15 11 22 11 37 0 11-4 11-4 19 0 4 12 8 23 11v15h60v-15s23-7 22-11c0-7-3-8-3-19 0-7 11-23 11-37 0-23-30-38-60-38zM41 49a15 15 0 110 30 15 15 0 010-30zm45 0a15 15 0 110 30 15 15 0 010-30zM64 75c4 0 11 15 11 19 0 8 0 8-4 8H56c-3 0-3 0-3-8 0-4 7-19 11-19z"/></svg>',
 		'💀',
 		1020, // 60 * 17
 		5,
