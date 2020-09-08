@@ -1,4 +1,4 @@
-**[Soul not Found](https://martintale.com/soul-not-found-compressed/?ref=soul-not-found-github)** is an idle incremental game made for [js13kGames](https://js13kgames.com/entries/2020?ref=soul-not-found) game jam.
+**[Soul Not Found](https://martintale.com/soul-not-found-compressed/?ref=soul-not-found-github)** is an idle incremental game made for [js13kGames](https://js13kgames.com/entries/2020?ref=soul-not-found) game jam.
 
 # Description
 
