@@ -10,7 +10,7 @@ const fs        = require('fs');
 module.exports = () => {
   gulp.task( 'zip', [ 'build', 'template' ], () => {
     return gulp.src('./dist/index.min.html')
-      .pipe( htmlmin({ collapseWhitespace: true }) )
+      .pipe( htmlmin({ collapseWhitespace: true, removeAttributeQuotes: true }) )
       .pipe( rename('index.html') )
       .pipe( zip('game.zip') )
       .pipe( gulp.dest('dist') );

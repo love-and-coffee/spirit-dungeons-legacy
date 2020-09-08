@@ -1,8 +1,6 @@
 const gulp = require('gulp');
-const babel = require('gulp-babel');
 const rollup = require('rollup-stream');
 const srcmaps = require('gulp-sourcemaps');
-const uglify = require('gulp-uglify');
 const buffer = require('vinyl-buffer');
 const source = require('vinyl-source-stream');
 const rename = require('gulp-rename');
@@ -37,9 +35,20 @@ module.exports = () => {
 		let pipeline;
 		return pipeline = gulp.src('./dist/main.js')
 			.pipe(terser({
-				ecma: 6,
+				ecma: 2020,
 				keep_fnames: false,
 				toplevel: true,
+				compress: {
+					passes: 10,
+					keep_fargs: false,
+					pure_getters: true,
+					unsafe: true,
+					unsafe_arrows: true,
+					unsafe_comps: true,
+					unsafe_math: true,
+					unsafe_methods: true,
+					unsafe_symbols: true,
+				},
 				mangle: {
 					properties: {
 						keep_quoted: true,

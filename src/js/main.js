@@ -1,9 +1,21 @@
+const monetization = document.monetization;
+const addEvent = (e, t, f) => {
+	e.addEventListener(t, f);
+};
+
+let isPremium = false;
+if (monetization) {
+	addEvent(monetization, 'monetizationstart', () => {
+		isPremium = true;
+	});
+}
+
 const click = 'click';
 const afterbegin = 'afterbegin';
-const w = window;
 const m = Math;
-const svgStart = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs/>';
 const increase = 'Increases your ';
+
+const svg = (path, width = 64, height = 64) => `<svg viewBox="0 0 ${width} ${height}"><path d="${path}"/></svg>`;
 
 const getElemById = (id) => document.getElementById(id);
 
@@ -19,77 +31,57 @@ const insertHtml = (element, where, what) => {
 	element.insertAdjacentHTML(where, what);
 };
 
-const Tween = function Tween(target, handler, settings) {
-	const { start } = settings;
-	const { end } = settings;
-	const { from } = settings;
-	const { to } = settings;
-	const { easing } = settings;
-	const { onstart } = settings;
-	const { onprogress } = settings;
-	const { onend } = settings;
+class Tween {
+	constructor(target, handler, settings) {
+		this.target = target;
+		this.handler = handler;
 
-	this.target = target;
-	this.handler = handler;
+		this.start = settings.start;
+		this.end = settings.end;
 
-	this.start = start;
-	this.end = end;
+		this.easing = settings.easing;
 
-	this.easing = easing;
+		this.from = settings.from;
+		this.to = settings.to;
+		this.keys = [];
 
-	this.from = from;
-	this.to = to;
-	this.keys = [];
+		this.onstart = settings.onstart;
+		this.onprogress = settings.onprogress;
+		this.onend = settings.onend;
 
-	this.onstart = onstart;
-	this.onprogress = onprogress;
-	this.onend = onend;
+		this.running = false;
 
-	this.running = false;
-
-	this.store = target.__liike || (target.__liike = {});
-};
-Tween.prototype.init = function init() {
-	const this$1 = this;
-
-	const ref = this;
-	const { from } = ref;
-	const { to } = ref;
-	const { keys } = ref;
-
-	for (const key in to) {
-		if (!(key in from)) {
-			from[key] = this$1.store[key] || 0;
-		}
-		keys.push(key);
+		this.store = target.__liike || (target.__liike = {});
 	}
 
-	for (const key$1 in from) {
-		if (!(key$1 in to)) {
-			to[key$1] = this$1.store[key$1] || 0;
-			keys.push(key$1);
+	init() {
+		for (const key in this.to) {
+			if (!(key in this.from)) {
+				this.from[key] = this.store[key] || 0;
+			}
+			this.keys.push(key);
+		}
+
+		for (const key in this.from) {
+			if (!(key in this.to)) {
+				this.to[key] = this.store[key] || 0;
+				this.keys.push(key);
+			}
 		}
 	}
-};
-Tween.prototype.tick = function tick(t) {
-	const this$1 = this;
 
-	const ref = this;
-	const { keys } = ref;
-	const { from } = ref;
-	const { to } = ref;
-	const { easing } = ref;
+	tick(t) {
+		const e = this.easing(t);
 
-	const e = easing(t);
+		for (let i = 0; i < getLength(this.keys); i++) {
+			const key = this.keys[i];
 
-	for (let i = 0; i < getLength(keys); i++) {
-		const key = keys[i];
+			this.store[key] = this.from[key] + (this.to[key] - this.from[key]) * e;
+		}
 
-		this$1.store[key] = from[key] + (to[key] - from[key]) * e;
+		this.handler(this.target, this.store);
 	}
-
-	this.handler(this.target, this.store);
-};
+}
 
 const easeInBy = (power) => (t) => m.pow(t, power);
 const easeOutBy = (power) => (t) => 1 - m.abs(m.pow(t - 1, power));
@@ -147,21 +139,21 @@ const tick = (now) => {
 	}
 
 	if (getLength(jobs) || getLength(tweens)) {
-		ticking = w.requestAnimationFrame(tick);
+		ticking = requestAnimationFrame(tick);
 	} else {
 		ticking = 0;
 	}
 };
 
 const liike = (handler) => function (target, settings) {
-	let { delay } = settings; if (delay === void 0) delay = 0;
-	let { duration } = settings; if (duration === void 0) duration = 0;
-	let { from } = settings; if (from === void 0) from = {};
-	let { to } = settings; if (to === void 0) to = {};
-	let { easing } = settings; if (easing === void 0) easing = 'linear';
-	let { onprogress } = settings; if (onprogress === void 0) onprogress = nullFunc;
-	let { onstart } = settings; if (onstart === void 0) onstart = nullFunc;
-	let { onend } = settings; if (onend === void 0) onend = nullFunc;
+	const { delay = 0 } = settings;
+	const { duration = 0 } = settings;
+	const { from = {} } = settings;
+	const { to = {} } = settings;
+	const { easing = 0 } = settings;
+	const { onprogress = nullFunc } = settings;
+	const { onstart = nullFunc } = settings;
+	const { onend = nullFunc } = settings;
 
 	jobs.push((now) => {
 		const tween = new Tween(target, handler, {
@@ -178,7 +170,7 @@ const liike = (handler) => function (target, settings) {
 		tweens.push(tween);
 	});
 	if (!ticking) {
-		ticking = w.requestAnimationFrame(tick);
+		ticking = requestAnimationFrame(tick);
 	}
 };
 
@@ -248,12 +240,12 @@ let processingAttackAction = 0;
 const unitUnlockLevel = [0, 10, 22, 36, 50, 70];
 
 const uiIcons = {
-	gold: `${svgStart}<path d="M31 3c-1 0-3 0-4 2l-1 1-1-1-5-1c-2 0-3 1-4 3l-1 1h-1l-4-1-2 2 10 8h7l6-3 4-10a5 6 0 00-4-1zm2 12a17 17 0 01-10 5l-2 2h1c0 3 1 6 3 8l-2 1-3-4 2 9-2 1c-2-6-3-12 0-17l-3-1-1 2c-4 5-6 11-5 15 0 3 2 5 3 7a19 19 0 016 1h3l10 2 2 1a4 5 0 010-1l-1-4c0-2 1-4 3-5v-2l-2-4 1-2a5 5 0 01-1-5l-2-3 2-4-2-2zm14 1l-8 1c-2 1-3 2-3 4l3 3 8 2 4-1v-2l4-1v2l3-3c0-2-1-3-3-4l-8-1zm12 8l-2 1 1 4 2-3-1-2zm-22 2l3 3 9 2 5-1v-3l-7 1-9-2zm1 4l-1 1 3 4 9 1h4v-3a25 25 0 01-14-2zm22 0a11 11 0 01-3 2v2l3-3zm1 5l-1 1v4l2-3-1-2zm-22 2l3 3a22 22 0 0014 1v-3l-7 1-10-2zm-1 2c-2 1-2 2-2 3l3 3 8 2h4v-3h-1c-3 0-6 0-9-2-1 0-3-1-3-3zm20 4l-3 1v1c2 0 2-1 3-2zm1 2l-2 2v3l3-3-1-2zm-43 1a19 19 0 00-11 3c-2 2-3 3-2 4 0 1 1 2 3 2h7l3-1v-2l4-3v3l2-4-3-2h-3zm7 0l1 2v2a14 14 0 015 3l3-2v3l3-3-3-3-9-2zm14 1l3 4 9 1h4v-4a24 24 0 01-16-1zm1 5l-1 1 3 3 9 2 4-1v-3a25 25 0 01-14-1zm21 0a11 12 0 01-2 1v3l3-3zm-36 0l-2 2a22 22 0 01-11 4l2 2 7 2 4-1v-2l4-2v3l2-3-3-3-3-2z"/></svg>`,
-	book: `${svgStart}<path d="M7 5v31l10 4v-3l-8-4 2-1 6 2-3-27-7-2zm50 0c-8 3-18 0-24 9v26c2-3 6-5 9-5 4-1 8-1 11-4l2 2c-4 3-9 3-13 4-3 1-7 2-9 8l24-9zM16 6l3 29v27l3-5 3 5V37L21 7zm8 3l3 27a11 11 0 014 4V14l-7-5zM3 9v31l14 5v-3L5 38V9zm56 0v29L32 48l-5-2v5c3 1 7 0 11-1v-2l23-8V9zM27 39v4l3 2-3-6z"/></svg>`,
-	level: `${svgStart}<path d="M12 2v19l1 1 15 3 6-8 6 8a68 62 0 0016-4l1-19-11 12-5-12-7 13-7-13-5 12zm22 19l-4 5 4 5 4-5zm-23 3h-1c0 1 0 2 3 3l17 3-2-3a57 51 0 01-17-3zm46 0h-1l-15 3-3 3c6 0 11-1 17-3l3-3h-1zm-3 5l-17 4-3 2-2-2-18-3c-2 3-3 7-3 11 5 2 9 5 11 8 1 3 2 7 1 10l3 1 1-6h3l-1 7h4v-7h3v7h4l-1-7h2l1 6 3-2c0-3 0-6 2-9s5-5 10-8l-3-12zm-36 6c4 0 9 2 14 5-7 4-18 4-15-5zm33 0h1c3 9-8 9-15 5 5-3 9-5 14-5zm-17 7l4 8h-7c0-3 2-6 3-8z"/></svg>`,
-	battle: `${svgStart}<path d="M8 2a2 2 0 00-1 1 2 2 0 002 4l7 8-6 5 3 4 4-7 1 5 10-2-3-3-5-2 7-4-3-3-6 5-8-8a2 2 0 00-2-3zm48 0a2 2 0 00-2 3l-7 8-6-5-3 3 7 4-5 2-3 3 10 1v-4l5 7 3-4-6-5 7-8a2 2 0 100-5zM33 22l-15 2c0 11 4 26 15 33 10-7 15-22 15-33l-15-2zM18 41L8 53l-2 8 8-2 8-10-4-8zm29 1l-4 8 8 9 8 2-2-8z"/></svg>`,
-	morality: `${svgStart}<path d="M32 3a29 29 0 100 58 29 29 0 000-58zm-1 2c-15 1-15 27 1 27s16 26 1 27h-1a27 27 0 01-1-54zm1 8c3 0 5 2 5 5s-2 5-5 5-5-2-5-5 2-5 5-5zm0 28c-3 0-5 2-5 5s2 5 5 5 5-2 5-5-2-5-5-5z"/></svg>`,
-	trophy: `${svgStart}<path d="M32 3L17 4l-4 1h-2l-1 2v4H7V8L4 7C3 20 8 33 18 42l1-3-1-2 2-2 6 4c3 2 1 4-3 5 7 1 5 7-2 11h-1l-3 1-2 1v2l2 1 3 1a86 86 0 0027-1l1-1 1-1-1-1-1-1-3-1h-1c-7-4-9-10-2-11-4-1-6-3-3-5l6-4 2 2-2 2 2 3c10-9 15-22 14-35l-3 1v3h-3V7l-1-2h-2l-4-1-15-1zm0 2a99 99 0 0118 2h1-1a98 98 0 01-36 0h-1 1a98 98 0 0118-2zM7 14h4c1 7 3 14 7 18l-3 3c-4-6-7-14-8-21zm46 0h4c-1 7-4 14-9 20l-2-2c4-4 6-11 7-18z"/></svg>`,
+	gold: svg('M31 3c-1 0-3 0-4 2l-1 1-1-1-5-1c-2 0-3 1-4 3l-1 1h-1l-4-1-2 2 10 8h7l6-3 4-10a5 6 0 00-4-1zm2 12a17 17 0 01-10 5l-2 2h1c0 3 1 6 3 8l-2 1-3-4 2 9-2 1c-2-6-3-12 0-17l-3-1-1 2c-4 5-6 11-5 15 0 3 2 5 3 7a19 19 0 016 1h3l10 2 2 1a4 5 0 010-1l-1-4c0-2 1-4 3-5v-2l-2-4 1-2a5 5 0 01-1-5l-2-3 2-4-2-2zm14 1l-8 1c-2 1-3 2-3 4l3 3 8 2 4-1v-2l4-1v2l3-3c0-2-1-3-3-4l-8-1zm12 8l-2 1 1 4 2-3-1-2zm-22 2l3 3 9 2 5-1v-3l-7 1-9-2zm1 4l-1 1 3 4 9 1h4v-3a25 25 0 01-14-2zm22 0a11 11 0 01-3 2v2l3-3zm1 5l-1 1v4l2-3-1-2zm-22 2l3 3a22 22 0 0014 1v-3l-7 1-10-2zm-1 2c-2 1-2 2-2 3l3 3 8 2h4v-3h-1c-3 0-6 0-9-2-1 0-3-1-3-3zm20 4l-3 1v1c2 0 2-1 3-2zm1 2l-2 2v3l3-3-1-2zm-43 1a19 19 0 00-11 3c-2 2-3 3-2 4 0 1 1 2 3 2h7l3-1v-2l4-3v3l2-4-3-2h-3zm7 0l1 2v2a14 14 0 015 3l3-2v3l3-3-3-3-9-2zm14 1l3 4 9 1h4v-4a24 24 0 01-16-1zm1 5l-1 1 3 3 9 2 4-1v-3a25 25 0 01-14-1zm21 0a11 12 0 01-2 1v3l3-3zm-36 0l-2 2a22 22 0 01-11 4l2 2 7 2 4-1v-2l4-2v3l2-3-3-3-3-2z'),
+	book: svg('M7 5v31l10 4v-3l-8-4 2-1 6 2-3-27-7-2zm50 0c-8 3-18 0-24 9v26c2-3 6-5 9-5 4-1 8-1 11-4l2 2c-4 3-9 3-13 4-3 1-7 2-9 8l24-9zM16 6l3 29v27l3-5 3 5V37L21 7zm8 3l3 27a11 11 0 014 4V14l-7-5zM3 9v31l14 5v-3L5 38V9zm56 0v29L32 48l-5-2v5c3 1 7 0 11-1v-2l23-8V9zM27 39v4l3 2-3-6z'),
+	level: svg('M12 2v19l1 1 15 3 6-8 6 8a68 62 0 0016-4l1-19-11 12-5-12-7 13-7-13-5 12zm22 19l-4 5 4 5 4-5zm-23 3h-1c0 1 0 2 3 3l17 3-2-3a57 51 0 01-17-3zm46 0h-1l-15 3-3 3c6 0 11-1 17-3l3-3h-1zm-3 5l-17 4-3 2-2-2-18-3c-2 3-3 7-3 11 5 2 9 5 11 8 1 3 2 7 1 10l3 1 1-6h3l-1 7h4v-7h3v7h4l-1-7h2l1 6 3-2c0-3 0-6 2-9s5-5 10-8l-3-12zm-36 6c4 0 9 2 14 5-7 4-18 4-15-5zm33 0h1c3 9-8 9-15 5 5-3 9-5 14-5zm-17 7l4 8h-7c0-3 2-6 3-8z'),
+	battle: svg('M8 2a2 2 0 00-1 1 2 2 0 002 4l7 8-6 5 3 4 4-7 1 5 10-2-3-3-5-2 7-4-3-3-6 5-8-8a2 2 0 00-2-3zm48 0a2 2 0 00-2 3l-7 8-6-5-3 3 7 4-5 2-3 3 10 1v-4l5 7 3-4-6-5 7-8a2 2 0 100-5zM33 22l-15 2c0 11 4 26 15 33 10-7 15-22 15-33l-15-2zM18 41L8 53l-2 8 8-2 8-10-4-8zm29 1l-4 8 8 9 8 2-2-8z'),
+	morality: svg('M32 3a29 29 0 100 58 29 29 0 000-58zm-1 2c-15 1-15 27 1 27s16 26 1 27h-1a27 27 0 01-1-54zm1 8c3 0 5 2 5 5s-2 5-5 5-5-2-5-5 2-5 5-5zm0 28c-3 0-5 2-5 5s2 5 5 5 5-2 5-5-2-5-5-5z'),
+	trophy: svg('M32 3L17 4l-4 1h-2l-1 2v4H7V8L4 7C3 20 8 33 18 42l1-3-1-2 2-2 6 4c3 2 1 4-3 5 7 1 5 7-2 11h-1l-3 1-2 1v2l2 1 3 1a86 86 0 0027-1l1-1 1-1-1-1-1-1-3-1h-1c-7-4-9-10-2-11-4-1-6-3-3-5l6-4 2 2-2 2 2 3c10-9 15-22 14-35l-3 1v3h-3V7l-1-2h-2l-4-1-15-1zm0 2a99 99 0 0118 2h1-1a98 98 0 01-36 0h-1 1a98 98 0 0118-2zM7 14h4c1 7 3 14 7 18l-3 3c-4-6-7-14-8-21zm46 0h4c-1 7-4 14-9 20l-2-2c4-4 6-11 7-18z'),
 };
 
 const premiumIcons = {
@@ -282,7 +274,7 @@ const trophyColors = [
 
 const units = [
 	[
-		'<svg xmlns="http://www.w3.org/2000/svg" class="skeleton" viewBox="0 0 128 128"><defs/><path d="M64 4C34 4 4 19 4 42c0 15 11 22 11 37 0 11-4 11-4 19 0 4 12 8 23 11v15h60v-15s23-7 22-11c0-7-3-8-3-19 0-7 11-23 11-37 0-23-30-38-60-38zM41 49a15 15 0 110 30 15 15 0 010-30zm45 0a15 15 0 110 30 15 15 0 010-30zM64 75c4 0 11 15 11 19 0 8 0 8-4 8H56c-3 0-3 0-3-8 0-4 7-19 11-19z"/></svg>',
+		svg('M64 4C34 4 4 19 4 42c0 15 11 22 11 37 0 11-4 11-4 19 0 4 12 8 23 11v15h60v-15s23-7 22-11c0-7-3-8-3-19 0-7 11-23 11-37 0-23-30-38-60-38zM41 49a15 15 0 110 30 15 15 0 010-30zm45 0a15 15 0 110 30 15 15 0 010-30zM64 75c4 0 11 15 11 19 0 8 0 8-4 8H56c-3 0-3 0-3-8 0-4 7-19 11-19z', 128, 128),
 		'💀',
 		1020, // 60 * 17
 		5,
@@ -294,7 +286,7 @@ const units = [
 		0.01,
 	],
 	[
-		`${svgStart}<path d="M32 3l-5 1c6 3 13 6 22 8l-3-3c-4-3-9-6-14-6zm-9 2l-7 5 4 1a326 326 0 0024 6h7v-2C40 13 31 9 23 5zm-8 7l-1 3-2 4 23-2h-4a338 338 0 01-16-5zm37 7l-42 3v3c15-2 29-1 43 0v-3l-1-3zm-35 7l5 6c2 1 5-1 7-2-4 0-8-2-12-4zm30 0c-4 2-8 4-11 4 1 1 4 3 6 2l5-6zm4 1l-2 6h2l2-6zm-38 0l-2 1v2l3 1zm-4 3l-4 9 4 1 2-3-1-2zm3 3l2 6c11 3 24 3 36 3l1-7c-13 1-26 1-39-2zm3 9l2 7c14-3 26-3 32-3v-2c-11 0-23 0-34-2zm22 7h-3l1 2zm8 0l-2 4h2l2-4zm4 0l-2 5 4 6 3-5a16 16 0 01-5-6zm-19 0h-2l1 3zm-10 1l-2 1 1 2h2zm6 1l-1 3h2zm6 0v3h2zm6 1l-1 2h2zm-18 3l1 3 7 3 7-5-15-1zm24 0l-6 1-7 5h1c5 0 9-1 11-3z"/></svg>`,
+		svg('M32 3l-5 1c6 3 13 6 22 8l-3-3c-4-3-9-6-14-6zm-9 2l-7 5 4 1a326 326 0 0024 6h7v-2C40 13 31 9 23 5zm-8 7l-1 3-2 4 23-2h-4a338 338 0 01-16-5zm37 7l-42 3v3c15-2 29-1 43 0v-3l-1-3zm-35 7l5 6c2 1 5-1 7-2-4 0-8-2-12-4zm30 0c-4 2-8 4-11 4 1 1 4 3 6 2l5-6zm4 1l-2 6h2l2-6zm-38 0l-2 1v2l3 1zm-4 3l-4 9 4 1 2-3-1-2zm3 3l2 6c11 3 24 3 36 3l1-7c-13 1-26 1-39-2zm3 9l2 7c14-3 26-3 32-3v-2c-11 0-23 0-34-2zm22 7h-3l1 2zm8 0l-2 4h2l2-4zm4 0l-2 5 4 6 3-5a16 16 0 01-5-6zm-19 0h-2l1 3zm-10 1l-2 1 1 2h2zm6 1l-1 3h2zm6 0v3h2zm6 1l-1 2h2zm-18 3l1 3 7 3 7-5-15-1zm24 0l-6 1-7 5h1c5 0 9-1 11-3z'),
 		'🧟',
 		1700, // 100 * 17
 		5,
@@ -306,7 +298,7 @@ const units = [
 		0.02,
 	],
 	[
-		`${svgStart}<path d="M34 2h-1c-6 1-11 6-10 10 0 3 2 6 5 7l1 1 2 2 9-1 1-3c3-2 4-5 4-8 0-4-5-8-11-8zm6 6a3 3 0 110 6 3 3 0 010-6zm-11 2a3 3 0 110 6 3 3 0 010-6zm5 4l3 5h-5zm-20 1c-7 0-8 2-11 3 0 8 4 16 2 29 2-1 7-12 7-12l-1 11 7-12v6l4-6c0 3-1 7-3 9-5 7-6 17-6 17l5-7-2 9c5-4 7-8 8-13l1 13 3-8 5 8v-9c1 3 7 6 10 5-5-5-8-20 2-25l-3 8c4-1 6-4 7-6l-1 14 6-14v13c7-6 7-13 7-27-4-3-9-5-15-6l-3 5-1 3h-1l1 4h-3v-3h-2v4h-2l-1-4h-2v4h-2l-1-4-2-3a12 12 0 01-6-5l-7-1z"/></svg>`,
+		svg('M34 2h-1c-6 1-11 6-10 10 0 3 2 6 5 7l1 1 2 2 9-1 1-3c3-2 4-5 4-8 0-4-5-8-11-8zm6 6a3 3 0 110 6 3 3 0 010-6zm-11 2a3 3 0 110 6 3 3 0 010-6zm5 4l3 5h-5zm-20 1c-7 0-8 2-11 3 0 8 4 16 2 29 2-1 7-12 7-12l-1 11 7-12v6l4-6c0 3-1 7-3 9-5 7-6 17-6 17l5-7-2 9c5-4 7-8 8-13l1 13 3-8 5 8v-9c1 3 7 6 10 5-5-5-8-20 2-25l-3 8c4-1 6-4 7-6l-1 14 6-14v13c7-6 7-13 7-27-4-3-9-5-15-6l-3 5-1 3h-1l1 4h-3v-3h-2v4h-2l-1-4h-2v4h-2l-1-4-2-3a12 12 0 01-6-5l-7-1z'),
 		'👻',
 		3400, // 200 * 17
 		7,
@@ -318,7 +310,7 @@ const units = [
 		0.04,
 	],
 	[
-		`${svgStart}<path d="M32 2c-6 0-13 1-17 5-2 3-3 7-3 11l1 5 1 1 1-2a51 51 0 010-4v-1h1v-3h-1v-1h3v-3h-2l1-2c4-3 9-3 13-3l2 5 2-5c4 0 10 0 13 3l1 2h-2v3h3v1h-1v3h1v1a51 51 0 010 4l1 2 1-1 1-5c0-4-1-8-3-11-5-5-11-5-17-5zM21 19c-4 2-6 7-6 13v6c1 3 4 5 6 7v11l1 1c3 2 7 3 10 3 4 0 7 0 10-3l1-1V45c2-2 6-4 6-7v-6c0-6-2-11-5-13l-6-1-6 3-6-3-5 1zM7 23c0 3 1 7 3 10l2 5h1v-6-6l-3-2-3-1zm50 0l-3 1-3 2v12h1l3-5 2-10zm-35 3l9 9-1 1v2H18c0-2 2-6 6-6h1l-3-3-3 3-2-1zm2 12a2 2 0 100-4 2 2 0 000 4zm18-12l5 5-2 1-3-3-2 3c4 0 6 4 6 6H34l1-2-2-1zm-2 12a2 2 0 100-4 2 2 0 000 4zm-25 4L3 47c5 2 9 5 11 8 2 2 3 5 3 7h9l-5-3-2-3V46l-4-4zm34 0l-4 4v10l-1 3-6 3h9c0-2 1-5 3-7 2-3 6-6 11-8l-12-5zm-20 1l3 1 3-1 2 1c-2 1-3 3-5 3l-5-3zm-4 6l2 1h11l1-1 2 1-2 3h-1l-2 5-2-5h-4l-2 5-2-5-3-3z"/></svg>`,
+		svg('M32 2c-6 0-13 1-17 5-2 3-3 7-3 11l1 5 1 1 1-2a51 51 0 010-4v-1h1v-3h-1v-1h3v-3h-2l1-2c4-3 9-3 13-3l2 5 2-5c4 0 10 0 13 3l1 2h-2v3h3v1h-1v3h1v1a51 51 0 010 4l1 2 1-1 1-5c0-4-1-8-3-11-5-5-11-5-17-5zM21 19c-4 2-6 7-6 13v6c1 3 4 5 6 7v11l1 1c3 2 7 3 10 3 4 0 7 0 10-3l1-1V45c2-2 6-4 6-7v-6c0-6-2-11-5-13l-6-1-6 3-6-3-5 1zM7 23c0 3 1 7 3 10l2 5h1v-6-6l-3-2-3-1zm50 0l-3 1-3 2v12h1l3-5 2-10zm-35 3l9 9-1 1v2H18c0-2 2-6 6-6h1l-3-3-3 3-2-1zm2 12a2 2 0 100-4 2 2 0 000 4zm18-12l5 5-2 1-3-3-2 3c4 0 6 4 6 6H34l1-2-2-1zm-2 12a2 2 0 100-4 2 2 0 000 4zm-25 4L3 47c5 2 9 5 11 8 2 2 3 5 3 7h9l-5-3-2-3V46l-4-4zm34 0l-4 4v10l-1 3-6 3h9c0-2 1-5 3-7 2-3 6-6 11-8l-12-5zm-20 1l3 1 3-1 2 1c-2 1-3 3-5 3l-5-3zm-4 6l2 1h11l1-1 2 1-2 3h-1l-2 5-2-5h-4l-2 5-2-5-3-3z'),
 		'🧛',
 		6120, // 360 * 17
 		10,
@@ -330,7 +322,7 @@ const units = [
 		0.08,
 	],
 	[
-		`${svgStart}<path d="M31 3c-8 0-16 2-21 5H9c3 7 6 12 10 16v9l8 4-6 24h24l-4-17 8 13 2-1c-2-6-6-10-9-14l4-3-6-13 6-5c-2-4-5-8-9-11-4 2-6 7-9 11l-4 5-9-12c9-6 24-8 37-5-5-5-13-6-21-6z"/></svg>`,
+		svg('M31 3c-8 0-16 2-21 5H9c3 7 6 12 10 16v9l8 4-6 24h24l-4-17 8 13 2-1c-2-6-6-10-9-14l4-3-6-13 6-5c-2-4-5-8-9-11-4 2-6 7-9 11l-4 5-9-12c9-6 24-8 37-5-5-5-13-6-21-6z'),
 		'👽',
 		20400, // 1200 * 17
 		16,
@@ -342,7 +334,7 @@ const units = [
 		0.3,
 	],
 	[
-		`${svgStart}<path d="M25 5C5 10-2 38 5 54a51 51 0 0111-39c-3 12-3 24 1 32-2-10-1-22 2-30 0 7 1 14 4 19-1-13 6-5 8-1v5c0 2-2 4-4 5-4 2-7 5-7 8-1 2 0 5 2 7 1 1 4 2 7 1 2-1 4-3 5-6l3 2c0-4 1-7 3-10l-12 5 4 1c-1 4-3 5-4 6l-5-1c-1-1-2-3-1-5 0-2 2-4 6-6 3-1 5-3 6-6l-1-8c3-4 9-8 7 3 3-5 4-12 4-19 4 8 5 20 2 30 5-8 5-20 2-32 8 9 13 23 11 39 7-16-1-44-21-49 4 11 6 20-6 24-12-4-11-13-7-24zm2 7l-1 4c0 5 2 8 6 10a11 11 0 004-14s-2 7-4 9l-5-9z"/></svg>`,
+		svg('M25 5C5 10-2 38 5 54a51 51 0 0111-39c-3 12-3 24 1 32-2-10-1-22 2-30 0 7 1 14 4 19-1-13 6-5 8-1v5c0 2-2 4-4 5-4 2-7 5-7 8-1 2 0 5 2 7 1 1 4 2 7 1 2-1 4-3 5-6l3 2c0-4 1-7 3-10l-12 5 4 1c-1 4-3 5-4 6l-5-1c-1-1-2-3-1-5 0-2 2-4 6-6 3-1 5-3 6-6l-1-8c3-4 9-8 7 3 3-5 4-12 4-19 4 8 5 20 2 30 5-8 5-20 2-32 8 9 13 23 11 39 7-16-1-44-21-49 4 11 6 20-6 24-12-4-11-13-7-24zm2 7l-1 4c0 5 2 8 6 10a11 11 0 004-14s-2 7-4 9l-5-9z'),
 		'🐲',
 		30600, // 1800 * 17
 		17,
@@ -607,12 +599,12 @@ const orderBySpeed = (a, b) => {
 
 const saveGame = (gameStateToSave) => {
 	gameStateToSave[3] = Date.now();
-	w.localStorage.setItem('soulNotFoundGameState', JSON.stringify(gameStateToSave));
+	localStorage.setItem('soulNotFoundGameState', JSON.stringify(gameStateToSave));
 	return gameStateToSave;
 };
 
 const loadGame = (forceNew = false) => {
-	const loadedGameState = w.localStorage.getItem('soulNotFoundGameState');
+	const loadedGameState = localStorage.getItem('soulNotFoundGameState');
 
 	if (loadedGameState == null || forceNew) {
 		return saveGame(initialGameState.slice());
@@ -625,7 +617,7 @@ const restartGame = () => {
 		return;
 	}
 
-	if (!w.confirm('This will make things easier as you keep your attributes and trophy bonuses.')) {
+	if (!confirm('This will make things easier as you keep your attributes and trophy bonuses.')) {
 		return;
 	}
 
@@ -722,7 +714,7 @@ const addLockIcon = (query) => {
 		if (gameState[34]) {
 			insertHtml(elements[i], afterbegin, '🔒');
 		} else {
-			insertHtml(elements[i], afterbegin, `${svgStart}<path d="M32 2c-10 0-18 8-18 19v9h6v-9a12 12 0 1124 0v9h6v-9c0-10-8-19-18-19zM11 32l-3 9c0 12 10 21 24 21 13 0 24-9 24-21l-3-9zm21 3c3 0 5 2 5 5 0 2-1 4-3 5l4 12H26l4-12a5 5 0 012-10z"/></svg>`);
+			insertHtml(elements[i], afterbegin, svg('M32 2c-10 0-18 8-18 19v9h6v-9a12 12 0 1124 0v9h6v-9c0-10-8-19-18-19zM11 32l-3 9c0 12 10 21 24 21 13 0 24-9 24-21l-3-9zm21 3c3 0 5 2 5 5 0 2-1 4-3 5l4 12H26l4-12a5 5 0 012-10z'));
 		}
 	}
 };
@@ -739,43 +731,15 @@ const renderNotifications = () => {
 		}
 	}
 
-	if (affordableUpgrades) {
-		navSkillsElement.classList.add('notify');
-	} else {
-		navSkillsElement.classList.remove('notify');
-	}
-
-	if (getUnusedAttributes() > 0) {
-		navSkillsElement.classList.add('notify-1');
-	} else {
-		navSkillsElement.classList.remove('notify-1');
-	}
-
-	if (getUnusedSkills() > 0) {
-		navSkillsElement.classList.add('notify-2');
-	} else {
-		navSkillsElement.classList.remove('notify-2');
-	}
+	navSkillsElement.classList.toggle('notify', affordableUpgrades);
+	navSkillsElement.classList.toggle('notify-1', getUnusedAttributes() > 0);
+	navSkillsElement.classList.toggle('notify-2', getUnusedSkills() > 0);
 
 	const newTrophies = getLength(gameState[23]) - lastTrophyNotification;
 
-	if (newTrophies >= 1) {
-		navTrophiesElement.classList.add('notify');
-	} else {
-		navTrophiesElement.classList.remove('notify');
-	}
-
-	if (newTrophies >= 3) {
-		navTrophiesElement.classList.add('notify-1');
-	} else {
-		navTrophiesElement.classList.remove('notify-1');
-	}
-
-	if (newTrophies >= 5) {
-		navTrophiesElement.classList.add('notify-2');
-	} else {
-		navTrophiesElement.classList.remove('notify-2');
-	}
+	navTrophiesElement.classList.toggle('notify', newTrophies >= 1);
+	navTrophiesElement.classList.toggle('notify-1', newTrophies >= 3);
+	navTrophiesElement.classList.toggle('notify-2', newTrophies >= 5);
 };
 
 const renderPlayerSkills = () => {
@@ -899,13 +863,7 @@ const unlockTabs = () => {
 };
 
 const renderPlayerAttributes = () => {
-	const unusedAttributes = getUnusedAttributes();
-
-	if (unusedAttributes > 0) {
-		attributeBlockElement.classList.remove('done');
-	} else {
-		attributeBlockElement.classList.add('done');
-	}
+	attributeBlockElement.classList.toggle('done', getUnusedAttributes() < 1);
 	attackAttributeValueElement.innerHTML = gameState[6] + gameState[36];
 	defenseAttributeValueElement.innerHTML = gameState[7] + gameState[37];
 };
@@ -1894,7 +1852,7 @@ const loop = (timestamp) => {
 	draw();
 
 	lastRender = timestamp;
-	w.requestAnimationFrame(loop);
+	requestAnimationFrame(loop);
 };
 
 const unlockThemes = () => {
@@ -1910,18 +1868,14 @@ const switchTheme = (changeState, event = null) => {
 	if (event != null) {
 		event.preventDefault();
 	}
-	if (gameState[34]) {
-		setStyle(getElemById('normalIcon'), 'opacity', 0.1);
-		setStyle(getElemById('premiumIcon'), 'opacity', 1);
-	} else {
-		setStyle(getElemById('normalIcon'), 'opacity', 1);
-		setStyle(getElemById('premiumIcon'), 'opacity', 0.1);
-	}
+
+	setStyle(getElemById('normalIcon'), 'opacity', gameState[34] ? 0.1 : 1);
+	setStyle(getElemById('premiumIcon'), 'opacity', gameState[34] ? 1 : 0.1);
 
 	if (gameState[33] != true) {
 		if (event != null) {
-			if (w.confirm('This is premium game theme! Do you want to be redirected to coil.com to get a membership?')) {
-				const win = w.open('https://coil.com/?ref=soul-not-found', '_blank');
+			if (confirm('This is premium game theme! Do you want to be redirected to coil.com to get a membership?')) {
+				const win = open('https://coil.com/?ref=soul-not-found', '_blank');
 				win.focus();
 			} else {
 				event.preventDefault();
@@ -2035,7 +1989,7 @@ const setup = () => {
 
 	addEvent(player, click, (e) => { // eslint-disable-line no-undef
 		const element = e.target.closest('.unit');
-		const { id } = element.dataset;
+		const id = element.dataset.id;
 		if (element && id < getLength(gameState[12])) {
 			generateUnit(id);
 		}
@@ -2114,13 +2068,13 @@ const setup = () => {
 	gameState[2] = Date.now();
 
 	if (gameState[33] == false) {
-		if (mon) { // eslint-disable-line no-undef
-			addEvent(mon, 'monetizationstart', () => { // eslint-disable-line no-undef
+		if (monetization) {
+			addEvent(monetization, 'monetizationstart', () => {
 				unlockThemes();
 			});
 		}
 
-		if (isP) { // eslint-disable-line no-undef
+		if (isPremium) {
 			unlockThemes();
 		}
 	} else {
@@ -2140,13 +2094,13 @@ const setup = () => {
 
 	saveGame(gameState);
 
-	w.requestAnimationFrame(loop);
+	requestAnimationFrame(loop);
 };
 
 (function () {
 	setup();
 
-	addEvent(w, 'beforeunload', () => { // eslint-disable-line no-undef
+	addEvent(window, 'beforeunload', () => { // eslint-disable-line no-undef
 		stopBattle();
 	});
 }());
