@@ -17,7 +17,7 @@
 
 - Cash, crowned skull, swords emblem, padlock, bookmarklet, trophy, haunting, grim reaper, evil bat icon by [Lorc](http://lorcblog.blogspot.com?ref=soul-not-found) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/);
 - Yin yang, mummy head and vampire dracula icon by [Delapouite](http://delapouite.com?ref=soul-not-found) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/);
-- Death skull icon by [sbed](https://opengameart.org/content/95-game-icons) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/);
+- Death skull icon by [sbed](https://opengameart.org/content/95-game-icons?ref=soul-not-found) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/);
 - Thanks to [Decade Jam](https://discord.gg/Fq8wFgh) for helping me playtest the game;
 - Thanks to Florent Cailhol and Randy Tayler for helping me compress the game to 13 kilobytes!
 
