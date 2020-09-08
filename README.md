@@ -1,4 +1,4 @@
-**Soul not Found** is an idle incremental game made for [js13k game jam](https://js13kgames.com/entries/2020) and you can play it here - [https://martintale.com/soul-not-found-compressed/](https://martintale.com/soul-not-found-compressed/)
+**[Soul not Found](https://martintale.com/soul-not-found-compressed/?ref=soul-not-found-github)** is an idle incremental game made for [js13kGames](https://js13kgames.com/entries/2020?ref=soul-not-found) game jam.
 
 # Description
 
@@ -15,6 +15,14 @@
 
 # Credits
 
-- Cash, crowned skull, swords emblem, padlock, bookmarklet, trophy, haunting, grim reaper, evil bat icon by [Lorc](http://lorcblog.blogspot.com) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)
-- Yin yang, mummy head and vampire dracula icon by [Delapouite](http://delapouite.com) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)
-- Death skull icon by [sbed](https://opengameart.org/content/95-game-icons) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)
+- Cash, crowned skull, swords emblem, padlock, bookmarklet, trophy, haunting, grim reaper, evil bat icon by [Lorc](http://lorcblog.blogspot.com) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/);
+- Yin yang, mummy head and vampire dracula icon by [Delapouite](http://delapouite.com) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/);
+- Death skull icon by [sbed](https://opengameart.org/content/95-game-icons) under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/);
+- Thanks to [Decade Jam](https://discord.gg/Fq8wFgh) for helping me playtest the game;
+- Thanks to Florent Cailhol and Randy Tayler for helping me compress the game to 13 kilobytes!
+
+# Extras
+
+- Join my [discord](https://discord.gg/HBqCfc9) server;
+- or [message me](https://martintale.com/about-me?ref=soul-not-found-github#message-me) directly;
+- or [buy me a coffee](https://ko-fi.com/martintale?ref=soul-not-found)!
